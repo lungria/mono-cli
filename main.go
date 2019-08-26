@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/lungria/mono"
+)
 
 func main(){
+	mono.Client{}
 	fmt.Print("hello")
 }
