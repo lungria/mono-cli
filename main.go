@@ -22,14 +22,16 @@ func main() {
 	startDate := time.Date(2018, 6, 1, 0, 0, 0, 0, time.UTC)
 	endDate := time.Now().UTC()
 	duration := time.Second * time.Duration(2682000)
-
 	calc := newPeriodCalculator(startDate, endDate, duration)
-	calc.Next()
+	for calc.Next() {
+		statements, err := client.Statement(user.Accounts[0].ID, calc.current.From, calc.current.To)
+		apiRateLimit := time.After(time.Second * time.Duration(60))
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	statements, err := client.Statement(user.Accounts[0].ID, calc.current.From, calc.current.To)
-	if err != nil {
-		log.Fatal(err)
+		//todo save somewhere
+		fmt.Printf("%v", statements)
+		<-apiRateLimit
 	}
-
-	fmt.Printf("%v", statements)
 }
