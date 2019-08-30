@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/lungria/mono"
@@ -40,6 +41,8 @@ func main() {
 	}
 }
 
+var newLineRegexp = regexp.MustCompile(`\r?\n`)
+
 func saveStatements(items []mono.StatementItem) {
 	//todo write header using reflection
 	csvData := make([][]string, len(items), len(items))
@@ -49,7 +52,8 @@ func saveStatements(items []mono.StatementItem) {
 		currentLine := make([]string, 11, 11)
 		currentLine[0] = v.ID
 		currentLine[1] = fmt.Sprint(v.Time)
-		currentLine[2] = v.Description
+		//sometimes description contains "newline" char that breaks csv output
+		currentLine[2] = newLineRegexp.ReplaceAllString(v.Description, " ")
 		currentLine[3] = fmt.Sprint(v.MCC)
 		currentLine[4] = fmt.Sprint(v.Hold)
 		currentLine[5] = fmt.Sprint(v.Amount)
