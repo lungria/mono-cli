@@ -12,13 +12,14 @@ func Test_Next_WithValidInput_ReturnsCorrectAmountOfPeriods(t *testing.T) {
 
 	calc := newPeriodCalculator(startDate, endDate, duration)
 
-	coundOfPeriods := 0
+	countOfPeriods := 0
 	for calc.Next() {
-		coundOfPeriods++
+		t.Logf("Received date: %v\n", calc.current)
+		countOfPeriods++
 	}
 
 	expected := 12
-	if coundOfPeriods != expected {
-		t.Fatalf("Invalid count of periods returned: %v, expected: %v", coundOfPeriods, expected)
+	if countOfPeriods != expected {
+		t.Fatalf("Invalid count of periods returned: %v, expected: %v", countOfPeriods, expected)
 	}
 }

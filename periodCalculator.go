@@ -24,16 +24,20 @@ func (calculator *periodCalculator) Next() bool {
 	if calculator.disposed {
 		return false
 	}
-
+	calculator.current.To = calculator.current.To.Add(time.Second * time.Duration(1))
 	currentPeriodEnd := calculator.current.To.Add(calculator.periodDuration)
+	calculator.current.From = calculator.current.To
+
 	//we still have more periods to calculate
 	if currentPeriodEnd.Before(calculator.endDate) {
-		calculator.current.From = calculator.current.To.Add(time.Second * time.Duration(1))
 		calculator.current.To = currentPeriodEnd
+		return true
 	}
 
 	// no more values
 	calculator.disposed = true
+	calculator.current.To = calculator.endDate
+
 	return true
 }
 
