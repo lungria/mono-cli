@@ -8,31 +8,36 @@ type period struct {
 }
 
 type periodCalculator struct {
-	currentPeriodStartDate time.Time
-	endDate                time.Time
-	periodDuration         time.Duration
-	disposed               bool
+	current        *period
+	endDate        time.Time
+	periodDuration time.Duration
+	disposed       bool
 }
 
 func newPeriodCalculator(startDate time.Time, endDate time.Time, periodDuration time.Duration) *periodCalculator {
-	return &periodCalculator{currentPeriodStartDate: startDate, endDate: endDate, periodDuration: periodDuration}
+	tmp := &periodCalculator{current: &period{time.Time{}, startDate.Add(time.Second * time.Duration(-1))}, endDate: endDate, periodDuration: periodDuration}
+	return tmp
 }
 
-// Next returns period and flag that shows if this is a valid period or periods ended
-func (calculator *periodCalculator) Next() (period, bool) {
+// Next returns moves iterator and returns flag that shows if it's not ended
+func (calculator *periodCalculator) Next() bool {
 	if calculator.disposed {
-		return period{}, false
+		return false
 	}
 
-	currentPeriodEnd := calculator.currentPeriodStartDate.Add(calculator.periodDuration)
+	currentPeriodEnd := calculator.current.To.Add(calculator.periodDuration)
 	//we still have more periods to calculate
 	if currentPeriodEnd.Before(calculator.endDate) {
-		oldStartDate := calculator.currentPeriodStartDate
-		calculator.currentPeriodStartDate = currentPeriodEnd.Add(time.Second * time.Duration(1))
-		return period{oldStartDate, currentPeriodEnd}, true
+		calculator.current.From = calculator.current.To.Add(time.Second * time.Duration(1))
+		calculator.current.To = currentPeriodEnd
 	}
 
 	// no more values
 	calculator.disposed = true
-	return period{calculator.currentPeriodStartDate, calculator.endDate}, true
+	return true
+}
+
+// Current returns current value of iterator. Always call Next at least once before reading from current
+func (calculator *periodCalculator) Current() period {
+	return period{calculator.current.From, calculator.current.To}
 }
