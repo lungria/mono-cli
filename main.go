@@ -2,14 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/lungria/mono"
 	"log"
 	"os"
 	"time"
+
+	"github.com/lungria/mono"
 )
 
-func main(){
+func main() {
 	token := os.Getenv("MONO_APIKEY")
+	//startDateTime := os.Getenv("MONO_STARTDATE")
+
 	auth := mono.NewPersonalAuth(token)
 	client := mono.New(auth)
 	user, err := client.User()
