@@ -12,5 +12,5 @@ MONO_APIKEY - required. Your personal API key, see https://api.monobank.ua/
 
 MONO_STARTDATE - this tool will import statements occured after this date. Expected format: unix timestamp in UTC. If not set default value is monobank launch date (15 Nov 2017)
 
-MONO_STARTDATE - this tool will import statements occured before this date. Expected format: unix timestamp in UTC. If not set default value is current date time
+MONO_ENDDATE - this tool will import statements occured before this date. Expected format: unix timestamp in UTC. If not set default value is current date time
 ```
